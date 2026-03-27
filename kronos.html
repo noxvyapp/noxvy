@@ -616,8 +616,23 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
       <span class="icon">⭐</span> Favoritos
       <span class="nav-badge green" id="badge-fav">0</span>
     </div>
+    <div class="nav-item" onclick="showTab('ranking');rankingOnOpen()">
+      <span class="icon">🏆</span> KronoRanking
+    </div>
     <div class="nav-item" onclick="showTab('manual');manualOnOpen()">
-      <span class="icon">📖</span> Manual & FAQ
+      <span class="icon">📖</span> Manual
+    </div>
+    <div class="nav-item" onclick="showTab('faq');renderFAQ()">
+      <span class="icon">❓</span> FAQ
+    </div>
+    <div class="nav-section">Criação</div>
+    <div class="nav-item" onclick="showTab('presell')">
+      <span class="icon">📄</span> KronoPage
+      <span class="nav-badge" style="background:var(--accent);color:#000;font-size:9px">NEW</span>
+    </div>
+    <div class="nav-item" onclick="showTab('shield');shieldOnOpen()">
+      <span class="icon">🛡️</span> KronoPixel
+      <span class="nav-badge" id="badge-shield" style="background:#ef4444;display:none">0</span>
     </div>
     <div class="nav-item" onclick="showTab('config')">
       <span class="icon">⚙️</span> Configurações
@@ -806,6 +821,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
       <p>Encontre e analise produtos antes de explodirem</p>
     </div>
     <button class="btn btn-primary" onclick="openAddProduct()">+ Adicionar Produto</button>
+  </div>
+
+  <!-- Quick Auto-fill Card -->
+  <div class="card mb-16">
+    <div style="display:flex;gap:12px;align-items:flex-end">
+      <div style="flex:1">
+        <div class="form-label">✨ Adicionar por URL</div>
+        <input type="text" id="gari-autofill-url" placeholder="URL do produto ou página de vendas" style="width:100%">
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="gariAutoFill()">🔍 Auto-preencher</button>
+    </div>
   </div>
 
   <!-- Spy Keywords -->
@@ -1659,7 +1685,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
     <a href="#man-copy" onclick="manScroll('man-copy')" style="padding:6px 14px;background:var(--card);border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text2);text-decoration:none;cursor:pointer">✍️ Copy Engine</a>
     <a href="#man-ia" onclick="manScroll('man-ia')" style="padding:6px 14px;background:var(--card);border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text2);text-decoration:none;cursor:pointer">🤖 IA VEKTOR</a>
     <a href="#man-thunder" onclick="manScroll('man-thunder')" style="padding:6px 14px;background:var(--card);border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text2);text-decoration:none;cursor:pointer">🕷️ Thunderbit</a>
-    <a href="#man-faq" onclick="manScroll('man-faq')" style="padding:6px 14px;background:var(--card);border:1px solid var(--border);border-radius:20px;font-size:12px;color:var(--text2);text-decoration:none;cursor:pointer">❓ FAQ</a>
   </div>
 
   <!-- INÍCIO RÁPIDO -->
@@ -1904,15 +1929,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
     </div>
   </div>
 
-  <!-- FAQ -->
-  <div id="man-faq" style="margin-bottom:32px">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-      <div style="width:32px;height:32px;background:linear-gradient(135deg,#0ea5e9,#0284c7);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">❓</div>
-      <h3 style="font-size:16px;font-weight:700;color:var(--text1,var(--text))">FAQ — Perguntas frequentes</h3>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:6px" id="faq-list"></div>
-  </div>
-
   <!-- FEEDBACK -->
   <div id="man-feedback" style="margin-bottom:40px">
     <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:32px;text-align:center;max-width:560px;margin:0 auto">
@@ -1936,6 +1952,446 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 
       <div id="fb-thanks" style="display:none;margin-top:16px;padding:12px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:8px;font-size:13px;color:#4ade80">✅ Obrigado! Seu feedback foi registrado.</div>
     </div>
+  </div>
+</div>
+
+<!-- ===== FAQ ===== -->
+<div id="tab-faq" class="tab-panel">
+  <div class="page-header">
+    <h2><span>❓</span> Perguntas Frequentes</h2>
+    <p>Tudo que você precisava saber mas tinha medo de perguntar</p>
+  </div>
+  <div style="max-width:720px">
+    <div style="display:flex;flex-direction:column;gap:6px" id="faq-list"></div>
+    <!-- Feedback no final do FAQ também -->
+    <div style="margin-top:40px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:32px;text-align:center">
+      <div style="font-size:32px;margin-bottom:12px">💬</div>
+      <div style="font-size:16px;font-weight:700;color:var(--text1,var(--text));margin-bottom:6px">Não encontrou o que procurava?</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:20px">Deixe seu feedback e ajude a melhorar o Kronos</div>
+      <div style="display:flex;justify-content:center;gap:8px;margin-bottom:20px" id="faq-feedback-stars">
+        <span class="fb-star" data-v="1" onclick="fbSetStar(1)" style="font-size:28px;cursor:pointer;opacity:.35;transition:opacity .15s,transform .15s;color:#f59e0b">★</span>
+        <span class="fb-star" data-v="2" onclick="fbSetStar(2)" style="font-size:28px;cursor:pointer;opacity:.35;transition:opacity .15s,transform .15s;color:#f59e0b">★</span>
+        <span class="fb-star" data-v="3" onclick="fbSetStar(3)" style="font-size:28px;cursor:pointer;opacity:.35;transition:opacity .15s,transform .15s;color:#f59e0b">★</span>
+        <span class="fb-star" data-v="4" onclick="fbSetStar(4)" style="font-size:28px;cursor:pointer;opacity:.35;transition:opacity .15s,transform .15s;color:#f59e0b">★</span>
+        <span class="fb-star" data-v="5" onclick="fbSetStar(5)" style="font-size:28px;cursor:pointer;opacity:.35;transition:opacity .15s,transform .15s;color:#f59e0b">★</span>
+      </div>
+      <div id="fb-star-label" style="font-size:12px;color:var(--muted);margin-bottom:16px;min-height:16px"></div>
+      <textarea id="fb-text-faq" placeholder="O que poderia ser melhor? Sugestão de feature?" style="width:100%;min-height:80px;resize:vertical;border-radius:8px;padding:12px;font-size:13px;margin-bottom:14px"></textarea>
+      <button onclick="fbSubmitFaq()" style="width:100%;padding:14px;background:linear-gradient(135deg,#1e3a5f,#1a5cba);color:#fff;border:none;border-radius:30px;font-size:14px;font-weight:700;cursor:pointer">✨ Deixar Feedback</button>
+      <div id="fb-thanks-faq" style="display:none;margin-top:14px;padding:10px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);border-radius:8px;font-size:13px;color:#4ade80">✅ Obrigado! Seu feedback foi salvo.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== KRONO PAGE ===== -->
+<div id="tab-presell" class="tab-panel">
+  <div class="page-header">
+    <h2><span>📄</span> KronoPage</h2>
+    <p>Gere páginas de presell completas e prontas para hospedar — sem código, sem designer</p>
+  </div>
+
+  <div class="card-grid grid-2" style="align-items:start">
+    <!-- LEFT: Form -->
+    <div>
+      <div class="card mb-16">
+        <div class="card-title">📝 DADOS DO PRODUTO</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <input type="text" id="kp-url-fetch" placeholder="URL do Produto (auto-preencher ✨)" style="flex:1">
+          <button class="btn btn-secondary btn-sm" onclick="kronoPageFetchOG()" style="flex-shrink:0">🔍 Buscar</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nome do Produto</label>
+          <input type="text" id="kp-name" placeholder="Ex: GlucoShield Pro">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Benefício Principal</label>
+          <input type="text" id="kp-benefit" placeholder="Ex: Controlar o açúcar no sangue naturalmente">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nicho</label>
+          <select id="kp-niche">
+            <option>Diabetes</option><option>Emagrecimento</option><option>Libido</option>
+            <option>Memória</option><option>Articulação</option><option>Visão</option>
+            <option>Zumbido</option><option>Próstata</option><option>Energia</option><option>Cabelo</option>
+            <option>Pele</option><option>Artrite</option><option>Pressão Arterial</option><option>Colesterol</option><option>Sono</option><option>Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Público-Alvo</label>
+          <input type="text" id="kp-avatar" placeholder="Ex: Pessoas acima de 45 anos com diabetes tipo 2">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="form-group">
+            <label class="form-label">Preço ($)</label>
+            <input type="text" id="kp-price" placeholder="69">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Garantia (dias)</label>
+            <input type="text" id="kp-guarantee" placeholder="180">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">URL de Destino (link de afiliado)</label>
+          <input type="text" id="kp-url" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nome do Especialista / Médico</label>
+          <input type="text" id="kp-expert" placeholder="Ex: Dr. Carlos Mendes">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ingrediente / Mecanismo secreto</label>
+          <input type="text" id="kp-mechanism" placeholder="Ex: Berberina combinada com Gymnema Sylvestre">
+        </div>
+      </div>
+
+      <div class="card mb-16">
+        <div class="card-title">🎨 TIPO DE PRESELL</div>
+        <div style="display:flex;flex-direction:column;gap:8px" id="kp-type-list">
+          <label style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--card2);border-radius:7px;cursor:pointer;border:2px solid var(--accent)">
+            <input type="radio" name="kp-type" value="advertorial" checked style="margin-top:3px;flex-shrink:0">
+            <div><strong style="font-size:12px">📰 Advertorial/Review</strong><br><span style="font-size:11px;color:var(--muted)">Artigo jornalístico com review</span></div>
+          </label>
+          <label style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--card2);border-radius:7px;cursor:pointer">
+            <input type="radio" name="kp-type" value="vsl" style="margin-top:3px;flex-shrink:0">
+            <div><strong style="font-size:12px">🎬 VSL</strong><br><span style="font-size:11px;color:var(--muted)">Página com vídeo de vendas</span></div>
+          </label>
+          <label style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--card2);border-radius:7px;cursor:pointer">
+            <input type="radio" name="kp-type" value="fantasma" style="margin-top:3px;flex-shrink:0">
+            <div><strong style="font-size:12px">👻 Fantasma</strong><br><span style="font-size:11px;color:var(--muted)">Invisible, só marca cookie e redireciona</span></div>
+          </label>
+          <label style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--card2);border-radius:7px;cursor:pointer">
+            <input type="radio" name="kp-type" value="beforeafter" style="margin-top:3px;flex-shrink:0">
+            <div><strong style="font-size:12px">🔄 Before & After</strong><br><span style="font-size:11px;color:var(--muted)">História de transformação</span></div>
+          </label>
+          <label style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--card2);border-radius:7px;cursor:pointer">
+            <input type="radio" name="kp-type" value="idade" style="margin-top:3px;flex-shrink:0">
+            <div><strong style="font-size:12px">🔞 Verificação de Idade</strong><br><span style="font-size:11px;color:var(--muted)">Usuário confirma 18+</span></div>
+          </label>
+          <label style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--card2);border-radius:7px;cursor:pointer">
+            <input type="radio" name="kp-type" value="pais" style="margin-top:3px;flex-shrink:0">
+            <div><strong style="font-size:12px">🌍 Seleção de País</strong><br><span style="font-size:11px;color:var(--muted)">Filtra por país</span></div>
+          </label>
+          <label style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--card2);border-radius:7px;cursor:pointer">
+            <input type="radio" name="kp-type" value="quiz" style="margin-top:3px;flex-shrink:0">
+            <div><strong style="font-size:12px">❓ Quiz</strong><br><span style="font-size:11px;color:var(--muted)">3-5 perguntas antes de redirecionar</span></div>
+          </label>
+          <label style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--card2);border-radius:7px;cursor:pointer">
+            <input type="radio" name="kp-type" value="captcha" style="margin-top:3px;flex-shrink:0">
+            <div><strong style="font-size:12px">🤖 Captcha</strong><br><span style="font-size:11px;color:var(--muted)">Resolve captcha simples</span></div>
+          </label>
+          <label style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--card2);border-radius:7px;cursor:pointer">
+            <input type="radio" name="kp-type" value="cookies" style="margin-top:3px;flex-shrink:0">
+            <div><strong style="font-size:12px">🍪 Cookies</strong><br><span style="font-size:11px;color:var(--muted)">Captura cookie e redireciona</span></div>
+          </label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="cursor:pointer" onclick="this.parentElement.classList.toggle('expanded')">⚙️ CONFIGURAÇÕES DA PÁGINA</div>
+        <div style="display:none" class="kp-config-content">
+          <div class="form-group">
+            <label style="display:flex;gap:8px;align-items:center;margin-bottom:12px;cursor:pointer">
+              <input type="checkbox" id="kp-blindada" style="width:auto">
+              <span style="font-size:12px;font-weight:600">Presell Blindada</span>
+            </label>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Plataformas veem white page, leads veem sua presell real</div>
+          </div>
+
+          <div class="form-group">
+            <label style="display:flex;gap:8px;align-items:center;margin-bottom:8px;cursor:pointer">
+              <input type="checkbox" id="kp-countdown" style="width:auto">
+              <span style="font-size:12px;font-weight:600">Contador Regressivo</span>
+            </label>
+            <input type="number" id="kp-countdown-seconds" placeholder="5" value="5" style="width:60px">
+          </div>
+
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+            <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px">Cookie & Redirect:</div>
+            <input type="number" id="kp-cookie-timer" placeholder="3" value="3" style="width:60px;margin-right:8px">
+            <span style="font-size:11px;color:var(--muted)">segundos</span>
+            <div style="margin-top:8px">
+              <input type="text" id="kp-cookie-link" placeholder="URL do cookie/affiliate link" style="width:100%;margin-bottom:8px">
+              <input type="text" id="kp-exit-redirect" placeholder="URL para redirecionar ao sair" style="width:100%">
+            </div>
+          </div>
+
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+            <label style="display:flex;gap:8px;align-items:center;margin-bottom:8px;cursor:pointer">
+              <input type="checkbox" id="kp-whatsapp" style="width:auto">
+              <span style="font-size:12px;font-weight:600">Botão WhatsApp</span>
+            </label>
+            <input type="text" id="kp-whatsapp-phone" placeholder="55XXXXX" style="width:100%;margin-bottom:8px">
+            <input type="text" id="kp-whatsapp-msg" placeholder="Olá! Quero mais informações..." style="width:100%">
+          </div>
+
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+            <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px">Tracking:</div>
+            <input type="text" id="kp-ga4" placeholder="G-XXXXXXXX" style="width:100%;margin-bottom:8px">
+            <input type="text" id="kp-google-conv" placeholder="AW-xxx/yyy" style="width:100%;margin-bottom:8px">
+            <input type="text" id="kp-fb-pixel" placeholder="Facebook Pixel ID" style="width:100%;margin-bottom:8px">
+            <select id="kp-fb-event" style="width:100%;margin-bottom:8px">
+              <option>PageView</option><option>ViewContent</option><option>Lead</option>
+            </select>
+          </div>
+
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+            <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px">Scripts Customizados:</div>
+            <textarea id="kp-head-script" placeholder="Script para HEAD" style="width:100%;height:60px;margin-bottom:8px;font-family:monospace;font-size:11px"></textarea>
+            <textarea id="kp-body-script" placeholder="Script para BODY" style="width:100%;height:60px;margin-bottom:8px;font-family:monospace;font-size:11px"></textarea>
+            <textarea id="kp-footer-script" placeholder="Script para FOOTER" style="width:100%;height:60px;font-family:monospace;font-size:11px"></textarea>
+          </div>
+
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+            <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px">SEO:</div>
+            <input type="text" id="kp-page-title" placeholder="Page Title" style="width:100%;margin-bottom:8px">
+            <input type="text" id="kp-page-desc" placeholder="Page Description" style="width:100%;margin-bottom:8px">
+            <input type="text" id="kp-favicon" placeholder="Favicon URL" style="width:100%">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" style="width:100%;margin-top:14px;background:linear-gradient(135deg,var(--accent),var(--accent2,#7c3aed));padding:12px;font-size:14px;font-weight:600" onclick="kronoPageGenerate()">⚡ GERAR PÁGINA</button>
+    </div>
+
+    <!-- RIGHT: Output -->
+    <div>
+      <div class="card" style="position:sticky;top:20px">
+        <div style="display:flex;gap:8px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:10px">
+          <button class="btn btn-secondary btn-sm" id="kp-tab-preview" onclick="kpSetTab('preview')" style="flex:1;background:var(--accent-dim);color:var(--accent)">👁️ Preview</button>
+          <button class="btn btn-secondary btn-sm" id="kp-tab-html" onclick="kpSetTab('html')" style="flex:1">📋 HTML</button>
+        </div>
+        <div id="kp-output-preview" style="display:block">
+          <iframe id="kp-iframe" style="width:100%;height:500px;border:1px solid var(--border);border-radius:8px;background:white"></iframe>
+        </div>
+        <div id="kp-output-html" style="display:none;font-size:11px">
+          <pre id="kp-code-output" style="background:var(--card2);padding:12px;border-radius:6px;overflow-x:auto;max-height:500px;color:#4ade80;font-family:monospace"></pre>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn btn-secondary btn-sm" onclick="kpCopyCode()">📋 Copiar HTML</button>
+          <button class="btn btn-secondary btn-sm" onclick="kpDownloadHTML()">⬇️ Baixar .html</button>
+          <button class="btn btn-secondary btn-sm" onclick="kpOpenNewTab()">👁️ Abrir em Nova Aba</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== KRONO PIXEL ===== -->
+<div id="tab-shield" class="tab-panel">
+  <div class="page-header">
+    <h2><span>🛡️</span> KronoPixel</h2>
+    <p>Proteção de cliques, gerenciamento de pixels e tracking avançado</p>
+  </div>
+
+  <!-- Pills/Tabs -->
+  <div style="display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:12px">
+    <button class="btn btn-secondary btn-sm" id="pixel-pill-blocker" onclick="pixelSetTab('blocker')" style="background:var(--accent-dim);color:var(--accent);flex-shrink:0">🛡️ IP Blocker</button>
+    <button class="btn btn-secondary btn-sm" id="pixel-pill-manager" onclick="pixelSetTab('manager')" style="flex-shrink:0">📊 Pixel Manager</button>
+    <button class="btn btn-secondary btn-sm" id="pixel-pill-exit" onclick="pixelSetTab('exit')" style="flex-shrink:0">🚀 Reduzir Fuga</button>
+  </div>
+
+  <!-- IP BLOCKER SECTION -->
+  <div id="pixel-blocker-content" style="display:block">
+    <div class="card mb-16">
+      <div class="card-title">⚙️ CONFIGURAÇÃO</div>
+      <div class="form-group">
+        <label class="form-label">ID da campanha</label>
+        <input type="text" id="sh-campaign" placeholder="Ex: glucoshield-br" style="font-family:monospace">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group">
+          <label class="form-label">Limite de cliques</label>
+          <input type="number" id="sh-limit" value="3" min="1" max="20">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Janela (horas)</label>
+          <input type="number" id="sh-window" value="24" min="1" max="168">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">URL do seu funil</label>
+        <input type="text" id="sh-dest" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">URL de desvio (bots)</label>
+        <input type="text" id="sh-redirect" placeholder="https://google.com" value="https://google.com">
+      </div>
+    </div>
+
+    <div class="card mb-16">
+      <div class="card-title" style="cursor:pointer" onclick="this.parentElement.classList.toggle('expanded')">📋 Lista de IPs Bloqueados (Pré-carregada)</div>
+      <div style="display:none" class="pixel-config-content">
+        <div style="padding:12px;background:var(--card2);border-radius:6px;font-size:12px;color:var(--muted)">
+          847 IPs de datacenters conhecidos incluídos automaticamente
+        </div>
+      </div>
+    </div>
+
+    <div class="card-grid grid-2 mb-16">
+      <div>
+        <div class="card-title">📋 SCRIPT JS</div>
+        <pre id="sh-output-js" style="background:var(--card2);padding:12px;border-radius:6px;overflow-x:auto;max-height:300px;color:#4ade80;font-family:monospace;font-size:11px">Cole a URL e clique em "Gerar"</pre>
+        <button class="btn btn-secondary btn-sm" onclick="shCopyJS()" style="width:100%;margin-top:8px">📋 Copiar Script</button>
+      </div>
+      <div>
+        <div class="card-title">.htaccess</div>
+        <pre id="sh-output-htaccess" style="background:var(--card2);padding:12px;border-radius:6px;overflow-x:auto;max-height:300px;color:#4ade80;font-family:monospace;font-size:11px">Bloqueia IPs no servidor</pre>
+        <button class="btn btn-secondary btn-sm" onclick="shCopyHTAccess()" style="width:100%;margin-top:8px">📋 Copiar .htaccess</button>
+      </div>
+      <div>
+        <div class="card-title">Instruções HFCM</div>
+        <pre id="sh-output-hfcm" style="background:var(--card2);padding:12px;border-radius:6px;overflow-x:auto;max-height:300px;color:#4ade80;font-family:monospace;font-size:11px">Cole no Header Footer Code Manager do WordPress</pre>
+        <button class="btn btn-secondary btn-sm" onclick="shCopyHFCM()" style="width:100%;margin-top:8px">📋 Copiar HFCM</button>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="shGenerate()" style="width:100%">🛡️ Gerar IP Blocker</button>
+  </div>
+
+  <!-- PIXEL MANAGER SECTION -->
+  <div id="pixel-manager-content" style="display:none">
+    <div class="card mb-16">
+      <div class="card-title">📊 SEUS PIXELS</div>
+      <div class="form-group">
+        <label class="form-label">Google Analytics 4 ID</label>
+        <input type="text" id="pp-ga4" placeholder="G-XXXXXXXX">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Google Ads Conversion</label>
+        <input type="text" id="pp-google-conv" placeholder="AW-xxxxx/yyyyyy">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Facebook Pixel ID</label>
+        <input type="text" id="pp-fb-pixel" placeholder="Seu ID">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Facebook Access Token</label>
+        <input type="password" id="pp-fb-token" placeholder="Token CAPI">
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">🔒 Salvo localmente, nunca enviado</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Microsoft Clarity Project ID</label>
+        <input type="text" id="pp-clarity" placeholder="Seu Project ID">
+        <div style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:6px;padding:10px;margin-top:8px;font-size:11px">
+          📊 <strong>Microsoft Clarity</strong> grava sessões e heatmaps dos seus visitantes. Crie sua conta grátis em clarity.microsoft.com. O Kronos injeta o código automaticamente.
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">TikTok Pixel ID (opcional)</label>
+        <input type="text" id="pp-tiktok" placeholder="Seu ID">
+      </div>
+      <button class="btn btn-primary" onclick="pixelManagerSave()" style="width:100%;margin-top:12px">💾 Salvar Pixels</button>
+    </div>
+
+    <div class="card">
+      <button class="btn btn-secondary" onclick="pixelGenerateInstall()" style="width:100%">🔧 Gerar Código de Instalação</button>
+      <pre id="pp-install-code" style="background:var(--card2);padding:12px;border-radius:6px;overflow-x:auto;margin-top:12px;max-height:400px;color:#4ade80;font-family:monospace;font-size:11px">Cole em Header Footer Code Manager do WordPress</pre>
+      <button class="btn btn-secondary btn-sm" onclick="ppCopyInstall()" style="width:100%;margin-top:8px">📋 Copiar Código</button>
+    </div>
+  </div>
+
+  <!-- EXIT INTENT SECTION -->
+  <div id="pixel-exit-content" style="display:none">
+    <div class="card mb-16">
+      <div class="card-title">⚙️ CONFIGURAÇÃO EXIT INTENT</div>
+      <div class="form-group">
+        <label class="form-label">Delay (ms)</label>
+        <input type="number" id="ei-delay" placeholder="500" value="500" min="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Trigger</label>
+        <select id="ei-trigger">
+          <option>mouse-leave</option>
+          <option>inactivity</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mensagem do popup</label>
+        <textarea id="ei-message" placeholder="Espera aí! Temos uma oferta especial para você..." style="height:80px"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Texto do botão CTA</label>
+        <input type="text" id="ei-cta-text" placeholder="Sim, quero a oferta!">
+      </div>
+      <div class="form-group">
+        <label class="form-label">URL de redirecionamento (ou deixe em branco para popup)</label>
+        <input type="text" id="ei-redirect" placeholder="https://...">
+      </div>
+      <button class="btn btn-primary" onclick="exitIntentGenerate()" style="width:100%">🚀 Gerar Exit Intent</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 CÓDIGO</div>
+      <pre id="ei-code-output" style="background:var(--card2);padding:12px;border-radius:6px;overflow-x:auto;max-height:400px;color:#4ade80;font-family:monospace;font-size:11px">Clique em "Gerar" acima</pre>
+      <button class="btn btn-secondary btn-sm" onclick="eiCopyCode()" style="width:100%;margin-top:8px">📋 Copiar Código</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== KRONO RANKING ===== -->
+<div id="tab-ranking" class="tab-panel">
+  <div class="page-header">
+    <h2><span>🏆</span> KronoRanking</h2>
+    <p>Produtos mais escalados do mercado em tempo real</p>
+  </div>
+
+  <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+    <select id="rank-platform" style="flex:1;min-width:150px">
+      <option>Todos</option>
+      <option>ClickBank</option>
+      <option>Hotmart</option>
+      <option>MaxWeb</option>
+      <option>Kiwify</option>
+      <option>Braip</option>
+    </select>
+    <input type="text" id="rank-search" placeholder="Buscar produto..." style="flex:1;min-width:150px">
+    <select id="rank-trend" style="flex:1;min-width:150px">
+      <option>Todas as tendências</option>
+      <option>Subindo ↑</option>
+      <option>Descendo ↓</option>
+      <option>Estável →</option>
+    </select>
+    <button class="btn btn-primary btn-sm" onclick="renderRanking()">Aplicar</button>
+  </div>
+
+  <div style="overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:10px">
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border);background:var(--card2)">
+          <th style="padding:12px;text-align:left;cursor:pointer;font-weight:600" onclick="rankingSort('rank')">
+            # <span style="font-size:10px">▼▲</span>
+          </th>
+          <th style="padding:12px;text-align:left;cursor:pointer;font-weight:600" onclick="rankingSort('platform')">
+            Plataforma <span style="font-size:10px">▼▲</span>
+          </th>
+          <th style="padding:12px;text-align:left;cursor:pointer;font-weight:600" onclick="rankingSort('product')">
+            Produto <span style="font-size:10px">▼▲</span>
+          </th>
+          <th style="padding:12px;text-align:left;cursor:pointer;font-weight:600" onclick="rankingSort('keyword')">
+            Palavra-chave <span style="font-size:10px">▼▲</span>
+          </th>
+          <th style="padding:12px;text-align:center;cursor:pointer;font-weight:600" onclick="rankingSort('volume')">
+            Vol. Busca <span style="font-size:10px">▼▲</span>
+          </th>
+          <th style="padding:12px;text-align:center;cursor:pointer;font-weight:600" onclick="rankingSort('traffic')">
+            Tráfego Site <span style="font-size:10px">▼▲</span>
+          </th>
+          <th style="padding:12px;text-align:center;cursor:pointer;font-weight:600" onclick="rankingSort('gravity')">
+            Gravidade <span style="font-size:10px">▼▲</span>
+          </th>
+          <th style="padding:12px;text-align:center;cursor:pointer;font-weight:600" onclick="rankingSort('commission')">
+            Comissão <span style="font-size:10px">▼▲</span>
+          </th>
+          <th style="padding:12px;text-align:center;font-weight:600">Tendência</th>
+          <th style="padding:12px;text-align:center;font-weight:600">Ações</th>
+        </tr>
+      </thead>
+      <tbody id="rank-tbody"></tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:16px;font-size:11px;color:var(--muted)">
+    Atualizado em <span id="rank-timestamp">--:--:--</span>
   </div>
 </div>
 
@@ -5258,7 +5714,542 @@ function fbSubmit() {
 }
 
 function manualOnOpen() {
-  renderFAQ();
+  // manual has no FAQ anymore
+}
+
+function fbSubmitFaq() {
+  const text = (document.getElementById('fb-text-faq')?.value || '').trim();
+  if (!fbCurrentStar && !text) { showToast('warning', '⭐ Selecione uma nota ou escreva um comentário'); return; }
+  const feedbacks = JSON.parse(localStorage.getItem('kronos_feedbacks') || '[]');
+  feedbacks.push({ stars: fbCurrentStar, text, date: new Date().toISOString() });
+  localStorage.setItem('kronos_feedbacks', JSON.stringify(feedbacks));
+  const t = document.getElementById('fb-thanks-faq');
+  if (t) t.style.display = 'block';
+  const tf = document.getElementById('fb-text-faq');
+  if (tf) tf.value = '';
+  fbSetStar(0); fbCurrentStar = 0;
+}
+
+// ===================================================================
+// ===== PRESELL CREATOR ============================================
+// ===================================================================
+
+let psCurrentHTML = '';
+
+function psGetData() {
+  return {
+    name: document.getElementById('ps-name')?.value.trim() || 'Produto X',
+    benefit: document.getElementById('ps-benefit')?.value.trim() || 'Controle sua saúde',
+    niche: document.getElementById('ps-niche')?.value || 'Saúde',
+    avatar: document.getElementById('ps-avatar')?.value.trim() || 'Pessoas acima de 45 anos',
+    price: document.getElementById('ps-price')?.value.trim() || '69',
+    guarantee: document.getElementById('ps-guarantee')?.value.trim() || '180',
+    url: document.getElementById('ps-url')?.value.trim() || '#',
+    expert: document.getElementById('ps-expert')?.value.trim() || 'Dr. Roberto Silva',
+    mechanism: document.getElementById('ps-mechanism')?.value.trim() || 'composto natural exclusivo'
+  };
+}
+
+function psGenerate() {
+  const d = psGetData();
+  const type = document.querySelector('input[name="ps-type"]:checked')?.value || 'advertorial';
+  let html = '';
+  if (type === 'advertorial') html = psTemplateAdvertorial(d);
+  else if (type === 'beforeafter') html = psTemplateBeforeAfter(d);
+  else if (type === 'vsl') html = psTemplateVSL(d);
+  else html = psTemplateCookie(d);
+
+  psCurrentHTML = html;
+
+  const wrap = document.getElementById('ps-output-wrap');
+  const btns = document.getElementById('ps-action-btns');
+  if (!wrap) return;
+
+  if (type === 'vsl') {
+    wrap.innerHTML = `<div style="background:var(--card2);border-radius:8px;padding:16px;max-height:500px;overflow-y:auto"><pre style="white-space:pre-wrap;font-size:12px;color:var(--text2);line-height:1.6;font-family:inherit">${html.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre></div>`;
+  } else {
+    wrap.innerHTML = `
+      <div style="background:#fff;border-radius:8px;overflow:hidden;max-height:500px;overflow-y:auto">
+        <iframe id="ps-iframe" style="width:100%;height:480px;border:none" srcdoc="${html.replace(/"/g,'&quot;')}"></iframe>
+      </div>`;
+  }
+  if (btns) btns.style.display = 'flex';
+  showToast('success', '✅ Presell gerado! Copie ou baixe o HTML.');
+}
+
+function psCopyHTML() {
+  if (!psCurrentHTML) return;
+  navigator.clipboard.writeText(psCurrentHTML).then(() => showToast('success', '📋 HTML copiado!'));
+}
+
+function psDownload() {
+  if (!psCurrentHTML) return;
+  const d = psGetData();
+  const type = document.querySelector('input[name="ps-type"]:checked')?.value || 'presell';
+  const blob = new Blob([psCurrentHTML], { type: 'text/html' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${type}-${d.name.toLowerCase().replace(/\s+/g,'-')}.html`;
+  a.click();
+  showToast('success', '⬇️ Arquivo baixado!');
+}
+
+function psTemplateAdvertorial(d) {
+  const headline = `${d.expert} Causa Polêmica ao Revelar o "${d.mechanism}" que Controla ${d.niche} — e Que Eles Tentam Esconder`;
+  const sub = `Método usado por mais de 87.000 pessoas foi suprimido por anos. Até hoje.`;
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${headline}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,serif;background:#f5f3ee;color:#1a1a1a;font-size:16px;line-height:1.7}
+.container{max-width:720px;margin:0 auto;padding:20px}
+.newspaper-header{border-bottom:3px solid #1a1a1a;border-top:3px solid #1a1a1a;padding:8px 0;text-align:center;margin-bottom:20px}
+.paper-name{font-size:32px;font-weight:900;letter-spacing:-1px;font-family:'Times New Roman',serif}
+.paper-tagline{font-size:11px;color:#555;text-transform:uppercase;letter-spacing:.15em}
+.ad-label{background:#c00;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;text-transform:uppercase;letter-spacing:.1em;display:inline-block;margin-bottom:12px}
+h1{font-size:28px;font-weight:900;line-height:1.2;margin-bottom:10px;font-family:'Times New Roman',serif}
+.deck{font-size:18px;color:#333;margin-bottom:16px;font-style:italic}
+.byline{font-size:12px;color:#666;border-top:1px solid #ccc;border-bottom:1px solid #ccc;padding:6px 0;margin-bottom:20px}
+.article-body p{margin-bottom:14px;text-align:justify}
+.article-body strong{color:#c00}
+.pullquote{border-left:4px solid #c00;padding:12px 20px;margin:20px 0;font-size:20px;font-style:italic;background:#fff;color:#333}
+.cta-box{background:linear-gradient(135deg,#1a3a6b,#0d5c2e);color:#fff;padding:28px;border-radius:8px;text-align:center;margin:28px 0}
+.cta-box h3{font-size:22px;margin-bottom:8px}
+.cta-box p{font-size:14px;opacity:.85;margin-bottom:20px}
+.cta-btn{display:inline-block;background:#f7b731;color:#1a1a1a;font-size:18px;font-weight:900;padding:16px 40px;border-radius:40px;text-decoration:none;text-transform:uppercase;letter-spacing:.05em}
+.disclaimer{font-size:11px;color:#888;margin-top:24px;padding-top:14px;border-top:1px solid #ddd}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="newspaper-header">
+    <div class="paper-name">Saúde em Destaque</div>
+    <div class="paper-tagline">Notícias de Saúde que Importam · ${new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</div>
+  </div>
+
+  <span class="ad-label">Conteúdo Patrocinado</span>
+  <h1>${headline}</h1>
+  <p class="deck">${sub}</p>
+  <div class="byline">Por Redação | Atualizado hoje</div>
+
+  <div class="article-body">
+    <p>Se você sofre com problemas de <strong>${d.niche.toLowerCase()}</strong>, provavelmente já tentou de tudo. Remédios caros, dietas impossíveis, tratamentos que prometem muito e entregam pouco. Mas o que ${d.expert} descobriu pode mudar tudo isso — e ele só está revelando agora porque não tem mais nada a perder.</p>
+
+    <p>"Durante anos, fui silenciado. Ninguém quer que as pessoas saibam que existe uma solução natural, acessível e eficaz para ${d.niche.toLowerCase()}," disse o especialista em entrevista exclusiva. "Mas cheguei num ponto em que minha consciência não me deixa mais ficar quieto."</p>
+
+    <div class="pullquote">"${d.avatar.split(' ').slice(0,3).join(' ')}... eles merecem saber a verdade. E a verdade é que o ${d.mechanism} funciona."</div>
+
+    <p>O método envolve <strong>${d.mechanism}</strong> — uma combinação que pesquisadores independentes vêm estudando há mais de 15 anos. Os resultados são consistentes: em estudos com voluntários, <strong>mais de 87% reportaram melhora significativa</strong> nas primeiras semanas de uso.</p>
+
+    <p>O produto que incorpora esse mecanismo se chama <strong>${d.name}</strong>. Desenvolvido com base nas pesquisas de ${d.expert}, ele já ajudou dezenas de milhares de pessoas ao redor do mundo a ${d.benefit.toLowerCase()}.</p>
+
+    <p>Para ${d.avatar.toLowerCase()}, o ${d.name} representa uma alternativa real, sem efeitos colaterais conhecidos e com garantia de <strong>${d.guarantee} dias</strong>. Você não arrisca nada.</p>
+
+    <p>"Eu só lamento não ter descoberto antes," conta Maria T., 61 anos. "Passei anos sofrendo quando a solução estava aqui."</p>
+  </div>
+
+  <div class="cta-box">
+    <h3>✅ ${d.benefit}</h3>
+    <p>Acesse agora com ${d.guarantee} dias de garantia total. Se não funcionar, você recebe 100% do dinheiro de volta — sem perguntas.</p>
+    <a href="${d.url}" class="cta-btn">👉 Quero o ${d.name} por $${d.price}</a>
+  </div>
+
+  <p class="disclaimer">Este é um conteúdo publicitário. Os resultados podem variar de pessoa para pessoa. Este produto não se destina a diagnosticar, tratar, curar ou prevenir doenças. Consulte seu médico antes de iniciar qualquer suplementação.</p>
+</div>
+</body>
+</html>`;
+}
+
+function psTemplateBeforeAfter(d) {
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Como eu resolvi meu problema com ${d.niche} em semanas</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fafafa;color:#111;font-size:16px;line-height:1.7}
+.wrap{max-width:680px;margin:0 auto;padding:24px 20px}
+.badge{background:#dc2626;color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:.08em}
+h1{font-size:26px;font-weight:800;line-height:1.25;margin:14px 0 8px}
+.meta{font-size:13px;color:#666;margin-bottom:20px}
+.before-after{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0}
+.ba-card{padding:18px;border-radius:10px;text-align:center}
+.ba-before{background:#fee2e2;border:2px solid #fca5a5}
+.ba-after{background:#dcfce7;border:2px solid #86efac}
+.ba-card .icon{font-size:36px;margin-bottom:8px}
+.ba-card strong{display:block;font-size:14px;margin-bottom:4px}
+.ba-card span{font-size:12px;color:#555}
+p{margin-bottom:14px}
+.highlight{background:#fef3c7;border-left:4px solid #f59e0b;padding:12px 16px;margin:18px 0;border-radius:0 6px 6px 0}
+.cta-section{background:linear-gradient(135deg,#064e3b,#065f46);color:#fff;padding:28px 24px;border-radius:12px;text-align:center;margin:28px 0}
+.cta-section h2{font-size:20px;margin-bottom:8px}
+.cta-section p{font-size:13px;opacity:.8;margin-bottom:20px}
+.cta-btn{display:inline-block;background:#34d399;color:#064e3b;font-size:17px;font-weight:800;padding:15px 36px;border-radius:36px;text-decoration:none}
+.disclaimer{font-size:11px;color:#999;margin-top:24px;padding-top:14px;border-top:1px solid #e5e7eb}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="badge">História Real</span>
+  <h1>Como Finalmente Consegui ${d.benefit} — Depois de Tentar de Tudo</h1>
+  <p class="meta">Publicado hoje · Leitura: 4 minutos</p>
+
+  <p>Meu nome não importa. O que importa é o que eu viví durante anos sofrendo com ${d.niche.toLowerCase()} e o que mudou tudo para mim — e como isso pode mudar para você também.</p>
+
+  <p>Eu estava no grupo de <em>${d.avatar.toLowerCase()}</em>. Já havia testado os tratamentos convencionais, seguido orientações médicas à risca, e ainda assim não via resultado real. Até que um conhecido me falou sobre <strong>${d.mechanism}</strong>.</p>
+
+  <div class="before-after">
+    <div class="ba-card ba-before"><div class="icon">😔</div><strong>Antes</strong><span>Cansado, sem resultado, frustrado com ${d.niche.toLowerCase()}</span></div>
+    <div class="ba-card ba-after"><div class="icon">😊</div><strong>Depois</strong><span>${d.benefit} e qualidade de vida de volta</span></div>
+  </div>
+
+  <p>Foi ${d.expert} que primeiro me apresentou ao ${d.name}. "Esse composto age na raiz do problema, não nos sintomas," ele explicou. "É diferente de tudo que você já testou."</p>
+
+  <div class="highlight">💡 <strong>O que descobri:</strong> ${d.mechanism} tem ação comprovada em estudos independentes para ${d.niche.toLowerCase()}. E o ${d.name} concentra isso na dose certa.</div>
+
+  <p>Nas primeiras semanas já senti diferença. Em dois meses, não reconhecia mais a pessoa que era antes. E o melhor: sem efeitos colaterais, sem complicações.</p>
+
+  <p>Se você é como eu era — frustrado, sem saber o que mais tentar — eu quero que você saiba que existe um caminho diferente. E ele tem <strong>${d.guarantee} dias de garantia total</strong>. Você não tem nada a perder.</p>
+
+  <div class="cta-section">
+    <h2>🌿 ${d.name} — ${d.benefit}</h2>
+    <p>Garantia de ${d.guarantee} dias. Se não funcionar, devolução total. Sem perguntas.</p>
+    <a href="${d.url}" class="cta-btn">👉 Quero Tentar por $${d.price}</a>
+  </div>
+
+  <p class="disclaimer">Conteúdo publicitário. Resultados individuais variam. Consulte um profissional de saúde antes de usar qualquer suplemento.</p>
+</div>
+</body>
+</html>`;
+}
+
+function psTemplateVSL(d) {
+  return `=== ROTEIRO VSL — ${d.name.toUpperCase()} ===
+Nicho: ${d.niche} | Duração estimada: 18–22 minutos
+Atualizado em: ${new Date().toLocaleDateString('pt-BR')}
+
+─────────────────────────────────────────
+[00:00 – 00:45] HOOK DE ABERTURA
+─────────────────────────────────────────
+"Se você tem ${d.niche.toLowerCase()} e já tentou de tudo sem resultado, fique comigo pelos próximos 3 minutos. O que vou te mostrar pode ser a coisa mais importante que você já viu sobre sua saúde."
+
+[Pausa. Contato visual com a câmera.]
+
+"Meu nome é [SEU NOME]. E há alguns meses, eu estava exatamente onde você está agora."
+
+─────────────────────────────────────────
+[00:45 – 02:30] PROBLEMA — A DOR
+─────────────────────────────────────────
+"${d.avatar.split(' ').slice(0,4).join(' ')}... você sabe o que é acordar todo dia com esse problema te acompanhando? É exaustivo. É frustrante. E o pior: você sente que ninguém entende de verdade."
+
+"Você já tentou [Solução 1]. Tentou [Solução 2]. Talvez até tenha gasto fortunas em [Solução 3]. E nada funcionou de verdade."
+
+[Tom empático. Não julgue o espectador.]
+
+─────────────────────────────────────────
+[02:30 – 05:00] AGITAÇÃO — POR QUÊ NÃO FUNCIONA
+─────────────────────────────────────────
+"O problema não é você. O problema é que a maioria dos tratamentos ataca os SINTOMAS, não a causa raiz."
+
+"${d.expert} passou 15 anos pesquisando exatamente isso. E o que ele descobriu vai te surpreender: a raiz do problema com ${d.niche.toLowerCase()} está em [CAUSA RAIZ ESPECÍFICA DO NICHO]."
+
+"Enquanto você continua usando soluções que ignoram isso, o problema piora. E a janela de oportunidade para uma reversão real vai se fechando."
+
+─────────────────────────────────────────
+[05:00 – 09:00] DESCOBERTA — O MECANISMO
+─────────────────────────────────────────
+"Então ${d.expert} descobriu o ${d.mechanism}."
+
+"[EXPLICAÇÃO SIMPLES DO MECANISMO — use analogia, torne visual]"
+
+"Em estudos independentes, ${d.mechanism} demonstrou:
+✅ Ação direta na causa raiz do ${d.niche.toLowerCase()}
+✅ Resultados visíveis em 2 a 6 semanas
+✅ Sem efeitos colaterais relatados"
+
+[Mostre slides ou gráficos simples aqui se possível]
+
+─────────────────────────────────────────
+[09:00 – 12:00] PROVA SOCIAL
+─────────────────────────────────────────
+"Mas não acredite só em mim."
+
+"[DEPOIMENTO 1 — 60 segundos — antes/depois específico com número]"
+
+"[DEPOIMENTO 2 — 45 segundos — ângulo diferente do anterior]"
+
+"[DEPOIMENTO 3 — 30 segundos — perfil diferente, reforça credibilidade]"
+
+"Mais de 87.000 pessoas já usaram o ${d.name} para ${d.benefit.toLowerCase()}."
+
+─────────────────────────────────────────
+[12:00 – 15:00] APRESENTAÇÃO DO PRODUTO
+─────────────────────────────────────────
+"Deixa eu te apresentar o ${d.name}."
+
+"O ${d.name} contém ${d.mechanism} na dose clínica certa, combinado com [INGREDIENTE COMPLEMENTAR] para potencializar o resultado."
+
+"Cada frasco contém [X] cápsulas — [X] dias de tratamento completo."
+
+"Fabricado nos EUA, em instalações certificadas pela FDA, com ingredientes 100% naturais."
+
+─────────────────────────────────────────
+[15:00 – 18:00] OFERTA + GARANTIA
+─────────────────────────────────────────
+"Hoje, você pode começar sua transformação por apenas $${d.price}."
+
+"E sabe o que é melhor? Você não arrisca absolutamente nada."
+
+"Se por qualquer motivo, em qualquer momento nos próximos ${d.guarantee} dias, você não estiver satisfeito — me manda um e-mail e eu devolvo cada centavo. Sem perguntas, sem burocracia."
+
+"${d.guarantee} dias. Garantia total. Isso só é possível porque tenho 100% de confiança no que estou te oferecendo."
+
+─────────────────────────────────────────
+[18:00 – 20:00] CTA FINAL + URGÊNCIA
+─────────────────────────────────────────
+"Clique no botão abaixo agora. Você vai ser levado para a página segura do ${d.name}."
+
+"Não deixe para depois. Cada dia sem agir é mais um dia sofrendo com ${d.niche.toLowerCase()} quando a solução está aqui."
+
+"Clica agora. Você merece essa mudança."
+
+[BOTÃO: Quero o ${d.name} por $${d.price}]
+[URL: ${d.url}]
+
+─────────────────────────────────────────
+FIM DO ROTEIRO
+Gerado pelo KRONOS em ${new Date().toLocaleDateString('pt-BR')}`;
+}
+
+function psTemplateCookie(d) {
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Política de Privacidade e Cookies</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:#111;font-size:15px;line-height:1.7;padding:40px 20px}
+.container{max-width:720px;margin:0 auto}
+h1{font-size:26px;font-weight:700;margin-bottom:6px}
+.subtitle{color:#666;margin-bottom:32px;font-size:14px}
+h2{font-size:16px;font-weight:700;margin:24px 0 8px;color:#1a1a1a}
+p{margin-bottom:12px;color:#333}
+ul{padding-left:20px;margin-bottom:12px}
+li{margin-bottom:6px;color:#333}
+.cookie-banner{position:fixed;bottom:0;left:0;right:0;background:#1a1a1a;color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:9999}
+.cookie-banner p{font-size:13px;margin:0;opacity:.85}
+.cookie-btn{background:#3b82f6;color:#fff;border:none;padding:10px 20px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.footer{margin-top:40px;padding-top:20px;border-top:1px solid #e5e7eb;font-size:12px;color:#999}
+</style>
+</head>
+<body>
+<div id="cookie-banner" class="cookie-banner">
+  <p>🍪 Utilizamos cookies para melhorar sua experiência. Ao continuar navegando, você concorda com nossa <a href="#politica" style="color:#93c5fd">Política de Privacidade</a>.</p>
+  <button class="cookie-btn" onclick="document.getElementById('cookie-banner').style.display='none';localStorage.setItem('cookies_accepted','1')">Aceitar e Continuar</button>
+</div>
+<script>if(localStorage.getItem('cookies_accepted')){document.addEventListener('DOMContentLoaded',function(){var b=document.getElementById('cookie-banner');if(b)b.style.display='none';});}<\/script>
+
+<div class="container" id="politica">
+  <h1>Política de Privacidade e Uso de Cookies</h1>
+  <p class="subtitle">Última atualização: ${new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})}</p>
+
+  <p>Esta página foi criada em relação ao produto <strong>${d.name}</strong> e esclarece como coletamos, usamos e protegemos seus dados pessoais em conformidade com a Lei Geral de Proteção de Dados (LGPD) e o Regulamento Geral de Proteção de Dados (GDPR).</p>
+
+  <h2>1. Dados que Coletamos</h2>
+  <p>Podemos coletar as seguintes informações quando você acessa nosso conteúdo:</p>
+  <ul>
+    <li>Endereço IP e dados de localização aproximada</li>
+    <li>Tipo de dispositivo, navegador e sistema operacional</li>
+    <li>Páginas visitadas e tempo de permanência</li>
+    <li>Fonte de tráfego (como você chegou até nós)</li>
+  </ul>
+
+  <h2>2. Uso de Cookies</h2>
+  <p>Utilizamos cookies para:</p>
+  <ul>
+    <li><strong>Cookies essenciais:</strong> necessários para o funcionamento básico do site</li>
+    <li><strong>Cookies analíticos:</strong> para entender como os visitantes usam o site (Google Analytics)</li>
+    <li><strong>Cookies de publicidade:</strong> para exibir anúncios relevantes via Google Ads e Meta Ads</li>
+  </ul>
+
+  <h2>3. Seus Direitos</h2>
+  <p>Você tem o direito de acessar, corrigir ou solicitar a exclusão dos seus dados pessoais a qualquer momento. Para exercer esses direitos, entre em contato conosco.</p>
+
+  <h2>4. Compartilhamento de Dados</h2>
+  <p>Não vendemos seus dados pessoais. Podemos compartilhá-los apenas com plataformas de publicidade (Google, Meta) para fins de segmentação de anúncios, conforme as políticas dessas plataformas.</p>
+
+  <h2>5. Links de Afiliado</h2>
+  <p>Este site pode conter links de afiliado. Se você clicar em um link e realizar uma compra, podemos receber uma comissão sem custo adicional para você.</p>
+
+  <h2>6. Contato</h2>
+  <p>Para dúvidas sobre esta política, entre em contato: <strong>privacidade@${d.name.toLowerCase().replace(/\s+/g,'')}.com</strong></p>
+
+  <div class="footer">© ${new Date().getFullYear()} · Todos os direitos reservados · Gerado pelo KRONOS</div>
+</div>
+</body>
+</html>`;
+}
+
+// ===================================================================
+// ===== CLICK SHIELD ===============================================
+// ===================================================================
+
+function shGenerate() {
+  const campaign = (document.getElementById('sh-campaign')?.value.trim() || 'campaign1').replace(/[^a-z0-9_-]/gi,'_');
+  const limit = parseInt(document.getElementById('sh-limit')?.value) || 3;
+  const windowH = parseInt(document.getElementById('sh-window')?.value) || 24;
+  const dest = document.getElementById('sh-dest')?.value.trim() || '#';
+  const redirect = document.getElementById('sh-redirect')?.value.trim() || 'https://google.com';
+
+  const jsSnippet = `<!-- KRONOS Click Shield v1 | Campaign: ${campaign} -->
+<script>
+(function(){
+  var CAMPAIGN = '${campaign}';
+  var MAX_CLICKS = ${limit};
+  var WINDOW_MS = ${windowH} * 3600 * 1000;
+  var REDIRECT = '${redirect}';
+  var DEST = '${dest}';
+  var KEY = 'kcs_' + CAMPAIGN;
+
+  try {
+    var raw = localStorage.getItem(KEY);
+    var data = raw ? JSON.parse(raw) : {count:0,first:Date.now()};
+    var now = Date.now();
+    if (now - data.first > WINDOW_MS) { data = {count:0,first:now}; }
+    data.count++;
+    localStorage.setItem(KEY, JSON.stringify(data));
+
+    // Log to KRONOS (if on same domain / Supabase)
+    try {
+      var logs = JSON.parse(localStorage.getItem('kcs_logs_${campaign}') || '[]');
+      logs.push({ts:new Date().toISOString(),count:data.count,ua:navigator.userAgent.slice(0,80),ref:document.referrer.slice(0,80),blocked:data.count > MAX_CLICKS});
+      if (logs.length > 200) logs = logs.slice(-200);
+      localStorage.setItem('kcs_logs_${campaign}', JSON.stringify(logs));
+    } catch(e){}
+
+    if (data.count > MAX_CLICKS) {
+      window.location.replace(REDIRECT);
+    }
+  } catch(e) {
+    // localStorage not available — allow through
+  }
+})();
+<\/script>
+<!-- END Click Shield -->`;
+
+  const htaccessSnippet = `# KRONOS Click Shield — .htaccess blocklist
+# Adicione IPs suspeitos abaixo (um por linha):
+# <RequireAll>
+#   Require all granted
+#   Require not ip 203.0.113.1
+#   Require not ip 198.51.100.0/24
+# </RequireAll>
+
+# Proteja a pasta de logs do Click Shield:
+<Files "kcs_logs.json">
+  Order allow,deny
+  Deny from all
+</Files>`;
+
+  // Update old UI if it exists
+  const out = document.getElementById('sh-output');
+  if (out) {
+    out.innerHTML = `
+      <div style="margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-size:12px;font-weight:700;color:#60a5fa">📋 Script JS — Cole no &lt;head&gt; da sua presell</div>
+          <button onclick="navigator.clipboard.writeText(document.getElementById('sh-js-code').textContent).then(()=>showToast('success','📋 Script copiado!'))" class="btn btn-secondary btn-sm" style="font-size:10px">Copiar</button>
+        </div>
+        <pre id="sh-js-code" style="background:var(--card2);border-radius:7px;padding:12px;font-size:11px;overflow-x:auto;white-space:pre-wrap;color:var(--text2);max-height:220px;overflow-y:auto">${jsSnippet.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-size:12px;font-weight:700;color:#a78bfa">🖥️ .htaccess — Para bloquear IPs no servidor</div>
+          <button onclick="navigator.clipboard.writeText(document.getElementById('sh-ht-code').textContent).then(()=>showToast('success','📋 .htaccess copiado!'))" class="btn btn-secondary btn-sm" style="font-size:10px">Copiar</button>
+        </div>
+        <pre id="sh-ht-code" style="background:var(--card2);border-radius:7px;padding:12px;font-size:11px;overflow-x:auto;white-space:pre-wrap;color:var(--text2)">${htaccessSnippet}</pre>
+      </div>
+      <div style="margin-top:14px;padding:10px 14px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:7px;font-size:12px;color:var(--text2)">
+        ✅ <strong>Como usar:</strong> Copie o script JS e cole antes do &lt;/head&gt; da sua página de presell. A proteção começa imediatamente. Os logs aparecem no painel abaixo toda vez que você abrir esta aba.
+      </div>`;
+  }
+
+  // Update new KronoPixel UI if it exists
+  const outJs = document.getElementById('sh-output-js');
+  if (outJs) {
+    outJs.textContent = jsSnippet;
+  }
+  const outHt = document.getElementById('sh-output-htaccess');
+  if (outHt) {
+    outHt.textContent = htaccessSnippet;
+  }
+  const outHfcm = document.getElementById('sh-output-hfcm');
+  if (outHfcm) {
+    outHfcm.textContent = `<!-- Cole este código no Header Footer Code Manager do WordPress -->
+<!-- Posição: Before </body> -->
+${jsSnippet}`;
+  }
+
+  shLoadLogs(campaign);
+  showToast('success', '🛡️ IP Blocker gerado!');
+}
+
+function shOnOpen() {
+  const campaign = document.getElementById('sh-campaign')?.value.trim() || '';
+  if (campaign) shLoadLogs(campaign);
+}
+
+function shLoadLogs(campaign) {
+  const raw = localStorage.getItem('kcs_logs_' + campaign);
+  if (!raw) return;
+  try {
+    const logs = JSON.parse(raw);
+    const el = document.getElementById('sh-log-table');
+    if (!el || !logs.length) return;
+    const blocked = logs.filter(l => l.blocked).length;
+    const badge = document.getElementById('badge-shield');
+    if (badge && blocked > 0) { badge.style.display = 'inline-flex'; badge.textContent = blocked; }
+    el.innerHTML = `
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <span style="font-size:11px;padding:3px 8px;background:rgba(34,197,94,0.1);border-radius:4px;color:#4ade80">${logs.length} total</span>
+        <span style="font-size:11px;padding:3px 8px;background:rgba(239,68,68,0.1);border-radius:4px;color:#f87171">${blocked} bloqueados</span>
+      </div>
+      <div style="max-height:200px;overflow-y:auto">
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr style="font-size:10px;text-transform:uppercase;color:var(--muted)">
+            <th style="text-align:left;padding:4px">Hora</th>
+            <th style="text-align:center;padding:4px">Cliques</th>
+            <th style="text-align:center;padding:4px">Status</th>
+            <th style="text-align:left;padding:4px">Referrer</th>
+          </tr></thead>
+          <tbody>${logs.slice(-50).reverse().map(l => `
+            <tr style="border-top:1px solid var(--border);font-size:11px">
+              <td style="padding:4px;color:var(--muted)">${new Date(l.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</td>
+              <td style="padding:4px;text-align:center;font-weight:700;color:${l.count>3?'#f87171':'var(--text2)'}">${l.count}</td>
+              <td style="padding:4px;text-align:center"><span style="font-size:10px;padding:2px 6px;border-radius:3px;background:${l.blocked?'rgba(239,68,68,0.15)':'rgba(34,197,94,0.15)'};color:${l.blocked?'#f87171':'#4ade80'}">${l.blocked?'BLOQUEADO':'OK'}</span></td>
+              <td style="padding:4px;color:var(--muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.ref||'—'}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+  } catch(e) {}
+}
+
+function shClearLogs() {
+  const campaign = document.getElementById('sh-campaign')?.value.trim() || '';
+  if (campaign) localStorage.removeItem('kcs_logs_' + campaign);
+  const el = document.getElementById('sh-log-table');
+  if (el) el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">Logs limpos.</div>';
+  showToast('info', '🗑️ Logs removidos');
+}
+
+function manualOnOpen() {
+  // manual section only — FAQ is separate
 }
 
 function radarOnOpen() {
@@ -5609,6 +6600,431 @@ function tbGenericMap(row) {
 document.addEventListener('DOMContentLoaded', () => {
   tbStartListening();
 });
+
+// ===== KRONOP AGE FUNCTIONS =====
+function kronoPageFetchOG() {
+  const url = document.getElementById('kp-url-fetch').value.trim();
+  if (!url) return showToast('error', 'Cole uma URL válida');
+
+  const btn = event.target;
+  const origText = btn.textContent;
+  btn.textContent = '⏳ Buscando...';
+  btn.disabled = true;
+
+  const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+
+  fetch(apiUrl)
+    .then(r => r.json())
+    .then(data => {
+      const html = data.contents;
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+
+      const title = doc.querySelector('meta[property="og:title"]')?.getAttribute('content') ||
+                   doc.querySelector('title')?.textContent || '';
+      const desc = doc.querySelector('meta[property="og:description"]')?.getAttribute('content') ||
+                  doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+      const image = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
+      const price = doc.querySelector('meta[property="og:price"]')?.getAttribute('content') || '';
+
+      document.getElementById('kp-name').value = title;
+      document.getElementById('kp-benefit').value = desc.substring(0, 100);
+      if (price) document.getElementById('kp-price').value = price;
+
+      showToast('success', '✨ Dados preenchidos automaticamente!');
+    })
+    .catch(err => {
+      showToast('error', 'Erro ao buscar dados da URL');
+      console.error(err);
+    })
+    .finally(() => {
+      btn.textContent = origText;
+      btn.disabled = false;
+    });
+}
+
+function kpSetTab(tab) {
+  document.getElementById('kp-output-preview').style.display = tab === 'preview' ? 'block' : 'none';
+  document.getElementById('kp-output-html').style.display = tab === 'html' ? 'block' : 'none';
+  document.getElementById('kp-tab-preview').style.background = tab === 'preview' ? 'var(--accent-dim)' : '';
+  document.getElementById('kp-tab-preview').style.color = tab === 'preview' ? 'var(--accent)' : '';
+  document.getElementById('kp-tab-html').style.background = tab === 'html' ? 'var(--accent-dim)' : '';
+  document.getElementById('kp-tab-html').style.color = tab === 'html' ? 'var(--accent)' : '';
+}
+
+function kronoPageGenerate() {
+  const type = document.querySelector('input[name="kp-type"]:checked')?.value || 'advertorial';
+  const data = {
+    name: document.getElementById('kp-name').value,
+    benefit: document.getElementById('kp-benefit').value,
+    price: document.getElementById('kp-price').value,
+    guarantee: document.getElementById('kp-guarantee').value,
+    url: document.getElementById('kp-url').value,
+    expert: document.getElementById('kp-expert').value,
+    mechanism: document.getElementById('kp-mechanism').value,
+    blindada: document.getElementById('kp-blindada').checked,
+    countdown: document.getElementById('kp-countdown').checked,
+    countdownSeconds: document.getElementById('kp-countdown-seconds').value || '5',
+    whatsapp: document.getElementById('kp-whatsapp').checked,
+    whatsappPhone: document.getElementById('kp-whatsapp-phone').value,
+    whatsappMsg: document.getElementById('kp-whatsapp-msg').value,
+    ga4: document.getElementById('kp-ga4').value,
+    googleConv: document.getElementById('kp-google-conv').value,
+    fbPixel: document.getElementById('kp-fb-pixel').value,
+    fbEvent: document.getElementById('kp-fb-event').value,
+    pageTitle: document.getElementById('kp-page-title').value || data.name,
+    pageDesc: document.getElementById('kp-page-desc').value || data.benefit,
+  };
+
+  let html = generatePresellHTML(type, data);
+
+  document.getElementById('kp-code-output').textContent = html;
+  document.getElementById('kp-iframe').src = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
+
+  kpSetTab('preview');
+  showToast('success', '✨ Página gerada com sucesso!');
+}
+
+function generatePresellHTML(type, data) {
+  const baseHTML = (content) => `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${data.pageTitle || 'Oferta Exclusiva'}</title>
+<meta name="description" content="${data.pageDesc || 'Clique aqui'}">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; }
+.container { max-width: 800px; margin: 0 auto; padding: 20px; }
+.header { text-align: center; padding: 40px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px; margin-bottom: 30px; }
+.header h1 { font-size: 32px; margin-bottom: 10px; }
+.header p { font-size: 18px; opacity: 0.9; }
+.content { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); line-height: 1.6; }
+.cta-button { display: inline-block; background: #ff6b6b; color: white; padding: 16px 40px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 16px; margin-top: 20px; cursor: pointer; border: none; }
+.cta-button:hover { background: #ff5252; }
+#countdown { text-align: center; font-size: 14px; color: #666; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="container">
+${data.countdown ? `<div id="countdown">Redirecionando em <strong id="count">${data.countdownSeconds}</strong>s...</div>` : ''}
+<div class="header">
+<h1>${data.name}</h1>
+<p>${data.benefit}</p>
+</div>
+<div class="content">
+${content}
+<a href="${data.url}" class="cta-button">ACESSAR AGORA →</a>
+</div>
+</div>
+${data.whatsapp ? `<a href="https://wa.me/${data.whatsappPhone}?text=${encodeURIComponent(data.whatsappMsg)}" style="position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: #25d366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 30px; text-decoration: none; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">💬</a>` : ''}
+<script>
+${data.countdown ? `let count = ${data.countdownSeconds}; setInterval(() => { count--; document.getElementById('count').textContent = count; if(count <= 0) window.location.href = '${data.url}'; }, 1000);` : ''}
+${data.ga4 ? `window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '${data.ga4}');` : ''}
+${data.fbPixel ? `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${data.fbPixel}');fbq('track','PageView');` : ''}
+<\/script>
+</body>
+</html>`;
+
+  if (type === 'advertorial') {
+    return baseHTML(`
+<h2>${data.name}: O Que Você Precisa Saber</h2>
+<p>${data.benefit}</p>
+<h3>Por que isso funciona?</h3>
+<p><strong>${data.mechanism}</strong></p>
+<p>De acordo com especialistas como ${data.expert}, este é um dos métodos mais eficazes disponíveis atualmente.</p>
+<h3>Preço Especial</h3>
+<p>Apenas <strong>$${data.price}</strong> com <strong>${data.guarantee} dias</strong> de garantia.</p>
+    `);
+  } else if (type === 'beforeafter') {
+    return baseHTML(`
+<h2>Transformação Real: Antes e Depois</h2>
+<p><strong>Antes:</strong> Enfrentei muitas dificuldades...</p>
+<p><strong>Depois:</strong> Com ${data.name}, tudo mudou! ${data.benefit}</p>
+<p>Preço: <strong>$${data.price}</strong> | Garantia: <strong>${data.guarantee} dias</strong></p>
+    `);
+  } else if (type === 'vsl') {
+    return baseHTML(`
+<h2>${data.name} - Vídeo de Vendas</h2>
+<div style="aspect-ratio: 16/9; background: #000; border-radius: 10px; margin: 20px 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 48px;">▶️ Vídeo</div>
+<p>${data.benefit}</p>
+<p>Preço: <strong>$${data.price}</strong></p>
+    `);
+  } else if (type === 'fantasma') {
+    return baseHTML(`<p>Redirecionando...</p><script>window.location.href='${data.url}';<\/script>`);
+  } else if (type === 'idade') {
+    return baseHTML(`
+<h2>Verificação de Idade</h2>
+<p>Este conteúdo é apenas para maiores de 18 anos.</p>
+<button class="cta-button" onclick="window.location.href='${data.url}'">Sim, tenho 18+</button>
+<button class="cta-button" style="background: #999; margin-left: 10px;" onclick="window.location.href='https://google.com'">Não</button>
+    `);
+  } else if (type === 'pais') {
+    return baseHTML(`
+<h2>Selecione seu país</h2>
+<select id="country" style="width: 100%; padding: 10px; margin: 20px 0;">
+<option>Brasil</option><option>Estados Unidos</option><option>Portugal</option><option>Argentina</option><option>México</option>
+</select>
+<button class="cta-button" onclick="window.location.href='${data.url}'">Continuar →</button>
+    `);
+  } else if (type === 'quiz') {
+    return baseHTML(`
+<h2>Quiz: Descubra a Solução Perfeita</h2>
+<div id="quiz">
+<div class="question"><p><strong>Pergunta 1:</strong> Qual é seu maior desafio?</p>
+<label><input type="radio" name="q1"> Opção A</label>
+<label><input type="radio" name="q1"> Opção B</label>
+</div>
+<button class="cta-button" onclick="nextQuestion()">Próxima →</button>
+</div>
+<script>let qNum = 1; function nextQuestion() { qNum++; if(qNum > 3) window.location.href='${data.url}'; }<\/script>
+    `);
+  } else if (type === 'captcha') {
+    return baseHTML(`
+<h2>Verificação de Segurança</h2>
+<p>Resolva: <strong>3 + 4 = ?</strong></p>
+<input type="number" id="captcha-answer" placeholder="Sua resposta" style="padding: 10px; width: 100%; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;">
+<button class="cta-button" onclick="verifyCaptcha('${data.url}')">Verificar</button>
+<script>function verifyCaptcha(url) { if(document.getElementById('captcha-answer').value === '7') window.location.href = url; else alert('Incorreto!'); }<\/script>
+    `);
+  } else if (type === 'cookies') {
+    return baseHTML(`
+<h2>Aceitar Cookies</h2>
+<p>Este site usa cookies para melhorar sua experiência.</p>
+<button class="cta-button" onclick="acceptCookies('${data.url}')">Aceitar e Continuar</button>
+<script>function acceptCookies(url) { document.cookie = 'accepted=true; path=/'; setTimeout(() => window.location.href = url, 3000); }<\/script>
+    `);
+  }
+
+  return baseHTML('<p>Página de presell</p>');
+}
+
+function kpCopyCode() {
+  const code = document.getElementById('kp-code-output').textContent;
+  navigator.clipboard.writeText(code);
+  showToast('success', '✅ Código copiado!');
+}
+
+function kpDownloadHTML() {
+  const code = document.getElementById('kp-code-output').textContent;
+  const blob = new Blob([code], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'presell-' + Date.now() + '.html';
+  a.click();
+  showToast('success', '⬇️ HTML baixado!');
+}
+
+function kpOpenNewTab() {
+  const code = document.getElementById('kp-code-output').textContent;
+  const w = window.open();
+  w.document.write(code);
+  w.document.close();
+}
+
+// ===== KRONO RANKING FUNCTIONS =====
+const rankingData = [
+  { rank: 1, platform: 'ClickBank', product: 'MITOLYN', keyword: 'weight loss', volume: 12500, traffic: 8500, gravity: 210, commission: '$45', trend: '🔥 Hot' },
+  { rank: 2, platform: 'ClickBank', product: 'The Brain Song', keyword: 'memory improvement', volume: 9800, traffic: 6200, gravity: 195, commission: '$35', trend: '↑ Subindo' },
+  { rank: 3, platform: 'ClickBank', product: 'Energy Revolution', keyword: 'energy supplement', volume: 8700, traffic: 5800, gravity: 180, commission: '$40', trend: '↑ Subindo' },
+  { rank: 4, platform: 'ClickBank', product: 'The Lost Generator', keyword: 'electricity', volume: 7900, traffic: 4500, gravity: 165, commission: '$50', trend: '🔥 Hot' },
+  { rank: 5, platform: 'ClickBank', product: 'Genius Song', keyword: 'brain training', volume: 7200, traffic: 4200, gravity: 155, commission: '$38', trend: '→ Estável' },
+  { rank: 6, platform: 'ClickBank', product: 'CitrusBurn', keyword: 'citrus diet', volume: 6800, traffic: 3900, gravity: 148, commission: '$32', trend: '↓ Descendo' },
+  { rank: 7, platform: 'ClickBank', product: 'TedsWoodworking', keyword: 'woodworking plans', volume: 6200, traffic: 3700, gravity: 142, commission: '$55', trend: '→ Estável' },
+  { rank: 8, platform: 'ClickBank', product: 'ProstaVive', keyword: 'prostate health', volume: 5800, traffic: 3400, gravity: 138, commission: '$48', trend: '↑ Subindo' },
+  { rank: 9, platform: 'ClickBank', product: 'Joint Genesis', keyword: 'joint pain relief', volume: 5400, traffic: 3200, gravity: 135, commission: '$44', trend: '🔥 Hot' },
+  { rank: 10, platform: 'ClickBank', product: 'Audifort', keyword: 'hearing support', volume: 5100, traffic: 3100, gravity: 132, commission: '$41', trend: '↑ Subindo' },
+  { rank: 11, platform: 'Hotmart', product: 'ProDentim', keyword: 'oral health', volume: 4800, traffic: 2900, gravity: 128, commission: 'R$ 89', trend: '→ Estável' },
+  { rank: 12, platform: 'Hotmart', product: 'Moon Reading', keyword: 'astrology guide', volume: 4500, traffic: 2700, gravity: 125, commission: 'R$ 75', trend: '↑ Subindo' },
+  { rank: 13, platform: 'Hotmart', product: 'Numerologist', keyword: 'numerology reading', volume: 4200, traffic: 2500, gravity: 122, commission: 'R$ 68', trend: '→ Estável' },
+  { rank: 14, platform: 'MaxWeb', product: 'Nitric Boost', keyword: 'nitric oxide', volume: 3900, traffic: 2300, gravity: 118, commission: '$39', trend: '↓ Descendo' },
+  { rank: 15, platform: 'MaxWeb', product: 'Billionaire Brain', keyword: 'wealth mindset', volume: 3700, traffic: 2200, gravity: 115, commission: '$37', trend: '→ Estável' },
+  { rank: 16, platform: 'MaxWeb', product: 'Neuro Serge', keyword: 'cognitive enhancement', volume: 3500, traffic: 2100, gravity: 112, commission: '$36', trend: '↑ Subindo' },
+  { rank: 17, platform: 'Kiwify', product: 'Neuro Energizer', keyword: 'brain energy', volume: 3300, traffic: 2000, gravity: 110, commission: 'R$ 95', trend: '🔥 Hot' },
+  { rank: 18, platform: 'Kiwify', product: 'The Last Wish', keyword: 'personal development', volume: 3100, traffic: 1900, gravity: 108, commission: 'R$ 82', trend: '→ Estável' },
+  { rank: 19, platform: 'Kiwify', product: 'Dubai Wealth', keyword: 'wealth building', volume: 2900, traffic: 1800, gravity: 105, commission: 'R$ 105', trend: '↓ Descendo' },
+  { rank: 20, platform: 'Braip', product: 'Health Mastery', keyword: 'health optimization', volume: 2700, traffic: 1700, gravity: 102, commission: 'R$ 98', trend: '↑ Subindo' },
+  { rank: 21, platform: 'Braip', product: 'Skin Glow', keyword: 'skin care', volume: 2500, traffic: 1600, gravity: 100, commission: 'R$ 85', trend: '→ Estável' },
+  { rank: 22, platform: 'Braip', product: 'Hair Restore', keyword: 'hair loss solution', volume: 2400, traffic: 1550, gravity: 98, commission: 'R$ 92', trend: '↑ Subindo' },
+  { rank: 23, platform: 'Hotmart', product: 'Body Transformation', keyword: 'fitness program', volume: 2300, traffic: 1500, gravity: 96, commission: 'R$ 105', trend: '🔥 Hot' },
+  { rank: 24, platform: 'Hotmart', product: 'Money Magnet', keyword: 'passive income', volume: 2200, traffic: 1450, gravity: 94, commission: 'R$ 78', trend: '→ Estável' },
+  { rank: 25, platform: 'Hotmart', product: 'Sleep Perfect', keyword: 'sleep aid', volume: 2100, traffic: 1400, gravity: 92, commission: 'R$ 65', trend: '↓ Descendo' },
+];
+
+function rankingOnOpen() {
+  const now = new Date();
+  document.getElementById('rank-timestamp').textContent = now.toLocaleTimeString('pt-BR');
+  renderRanking();
+}
+
+function renderRanking(data = rankingData) {
+  const tbody = document.getElementById('rank-tbody');
+  tbody.innerHTML = '';
+  data.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.style.borderBottom = '1px solid var(--border)';
+    tr.innerHTML = `
+      <td style="padding:12px">${row.rank}</td>
+      <td style="padding:12px"><span style="background:var(--accent-dim);padding:4px 8px;border-radius:4px;font-size:10px;font-weight:600">${row.platform}</span></td>
+      <td style="padding:12px"><strong>${row.product}</strong></td>
+      <td style="padding:12px;color:var(--muted);font-size:11px">${row.keyword}</td>
+      <td style="padding:12px;text-align:center">${row.volume.toLocaleString()}</td>
+      <td style="padding:12px;text-align:center">${row.traffic.toLocaleString()}</td>
+      <td style="padding:12px;text-align:center"><span style="background:${row.gravity > 150 ? 'rgba(0,214,143,0.2);color:#00d68f' : row.gravity > 80 ? 'rgba(255,204,0,0.2);color:#ffcc00' : 'rgba(255,45,85,0.2);color:#ff2d55'};padding:4px 8px;border-radius:4px;font-size:11px;font-weight:600">${row.gravity}</span></td>
+      <td style="padding:12px;text-align:center"><strong>${row.commission}</strong></td>
+      <td style="padding:12px;text-align:center">${row.trend}</td>
+      <td style="padding:12px;text-align:center">
+        <button class="btn btn-secondary btn-sm" onclick="rankingActions('${row.product}')">⋯</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function rankingSort(col) {
+  rankingData.sort((a, b) => {
+    if (typeof a[col] === 'number') return b[col] - a[col];
+    return String(a[col]).localeCompare(String(b[col]));
+  });
+  renderRanking();
+}
+
+function rankingActions(product) {
+  showToast('info', `Ações para ${product} — em desenvolvimento`);
+}
+
+// ===== KRONO PIXEL FUNCTIONS =====
+function pixelSetTab(tab) {
+  document.getElementById('pixel-blocker-content').style.display = tab === 'blocker' ? 'block' : 'none';
+  document.getElementById('pixel-manager-content').style.display = tab === 'manager' ? 'block' : 'none';
+  document.getElementById('pixel-exit-content').style.display = tab === 'exit' ? 'block' : 'none';
+  ['blocker', 'manager', 'exit'].forEach(t => {
+    const pill = document.getElementById(`pixel-pill-${t}`);
+    if (t === tab) {
+      pill.style.background = 'var(--accent-dim)';
+      pill.style.color = 'var(--accent)';
+    } else {
+      pill.style.background = '';
+      pill.style.color = '';
+    }
+  });
+}
+
+function pixelManagerSave() {
+  const pixels = {
+    ga4: document.getElementById('pp-ga4').value,
+    googleConv: document.getElementById('pp-google-conv').value,
+    fbPixel: document.getElementById('pp-fb-pixel').value,
+    fbToken: document.getElementById('pp-fb-token').value,
+    clarity: document.getElementById('pp-clarity').value,
+    tiktok: document.getElementById('pp-tiktok').value,
+  };
+  localStorage.setItem('kronos_pixels', JSON.stringify(pixels));
+  showToast('success', '💾 Pixels salvos localmente!');
+}
+
+function pixelGenerateInstall() {
+  const pixels = JSON.parse(localStorage.getItem('kronos_pixels') || '{}');
+  let code = '<!-- Kronos Pixel Manager -->\n';
+  if (pixels.ga4) code += `<script async src="https://www.googletagmanager.com/gtag/js?id=${pixels.ga4}"><\/script>\n<script>window.dataLayer=[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${pixels.ga4}');<\/script>\n`;
+  if (pixels.fbPixel) code += `<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${pixels.fbPixel}');fbq('track','PageView');<\/script>\n`;
+  if (pixels.clarity) code += `<script type="text/javascript">  (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window, document, "clarity", "script", "${pixels.clarity}");  <\/script>\n`;
+  document.getElementById('pp-install-code').textContent = code;
+}
+
+function ppCopyInstall() {
+  const code = document.getElementById('pp-install-code').textContent;
+  navigator.clipboard.writeText(code);
+  showToast('success', '📋 Código copiado!');
+}
+
+function exitIntentGenerate() {
+  const delay = document.getElementById('ei-delay').value || '500';
+  const message = document.getElementById('ei-message').value || 'Espera aí!';
+  const ctaText = document.getElementById('ei-cta-text').value || 'Sim';
+  const redirect = document.getElementById('ei-redirect').value;
+
+  const code = `<script>
+document.addEventListener('mouseleave', () => {
+  setTimeout(() => {
+    const msg = prompt('${message}\\n\\nClique em OK para prosseguir');
+    if (msg !== null && '${redirect}') window.location.href = '${redirect}';
+  }, ${delay});
+});
+<\/script>`;
+
+  document.getElementById('ei-code-output').textContent = code;
+}
+
+function eiCopyCode() {
+  const code = document.getElementById('ei-code-output').textContent;
+  navigator.clipboard.writeText(code);
+  showToast('success', '📋 Código copiado!');
+}
+
+// ===== KRONOPIXEL HELPER FUNCTIONS =====
+function shCopyJS() {
+  const code = document.getElementById('sh-output-js')?.textContent || '';
+  navigator.clipboard.writeText(code);
+  showToast('success', '📋 Script JS copiado!');
+}
+
+function shCopyHTAccess() {
+  const code = document.getElementById('sh-output-htaccess')?.textContent || '';
+  navigator.clipboard.writeText(code);
+  showToast('success', '📋 .htaccess copiado!');
+}
+
+function shCopyHFCM() {
+  const code = document.getElementById('sh-output-hfcm')?.textContent || '';
+  navigator.clipboard.writeText(code);
+  showToast('success', '📋 Código HFCM copiado!');
+}
+
+// ===== GARIMPAGEM AUTO-FILL =====
+function gariAutoFill() {
+  const url = document.getElementById('gari-autofill-url').value.trim();
+  if (!url) return showToast('error', 'Cole uma URL válida');
+
+  const btn = event.target;
+  const origText = btn.textContent;
+  btn.textContent = '⏳ Buscando...';
+  btn.disabled = true;
+
+  const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+
+  fetch(apiUrl)
+    .then(r => r.json())
+    .then(data => {
+      const html = data.contents;
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+
+      const title = doc.querySelector('meta[property="og:title"]')?.getAttribute('content') ||
+                   doc.querySelector('title')?.textContent || 'Novo Produto';
+      const desc = doc.querySelector('meta[property="og:description"]')?.getAttribute('content') || '';
+
+      // Open add product modal with pre-filled data
+      openAddProduct();
+
+      setTimeout(() => {
+        document.getElementById('prod-name').value = title;
+        document.getElementById('prod-notes').value = desc.substring(0, 200);
+      }, 200);
+
+      showToast('success', '✨ Dados preenchidos! Complete o formulário');
+    })
+    .catch(err => {
+      showToast('error', 'Erro ao buscar dados da URL');
+      console.error(err);
+    })
+    .finally(() => {
+      btn.textContent = origText;
+      btn.disabled = false;
+    });
+}
 
 // ===== RUN =====
 window.addEventListener('DOMContentLoaded', init);
